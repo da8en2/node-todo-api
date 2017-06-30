@@ -1,4 +1,9 @@
-const MongoClient = require('mongodb').MongoClient;
+//const MongoClient = require('mongodb').MongoClient;
+//use object destructuring instead:
+const {MongoClient, ObjectID} = require('mongodb');
+
+var obj = new ObjectID();
+console.log(obj);
 
 // // example for ES6 object destructuring!
 // var user = {name: 'Dan', age: 35};
