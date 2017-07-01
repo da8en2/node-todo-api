@@ -2,45 +2,35 @@
 //use object destructuring instead:
 const {MongoClient, ObjectID} = require('mongodb');
 
-// // create ObjectID outside of mongodb
-// var obj = new ObjectID();
-// console.log(obj);
-
-// // example for ES6 object destructuring!
-// var user = {name: 'Dan', age: 35};
-// var {name} = user;
-// console.log(name);
-
-
 MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
   if (err) {
     return console.log('Unable to connect to MongoDB server');
   }
   console.log('Connected to MongoDB server');
 
-  // db.collection('Todos').insertOne({
-  //   text: 'Something to do',
-  //   completed: false
-  // }, (err, result) => {
-  //   if (err) {
-  //     return console.log('Unable to insert todo', err);
-  //   }
-  //
-  //   console.log(JSON.stringify(result.ops, undefined, 2));
-  // });
+  // db.collection('Todos').find({completed: false}).toArray().then((docs) => {
 
-  // db.collection('Users').insertOne({
-  //   name: 'Dan',
-  //   age: 35,
-  //   location: 'Phoenix'
-  // }, (err, result) => {
-  //   if (err) {
-  //     return console.log('Unable to insert user', err);
-  //   }
-  //
-  //   console.log(JSON.stringify(result.ops, undefined, 2));
-  //   console.log(result.ops[0]._id.getTimestamp());
-  // });
+  // db.collection('Todos').find({
+  //   _id: new ObjectID('5955f045d53c0162102d641e')
+  // }).toArray().then((docs) => {
+  //   console.log('Todos');
+  //   console.log(JSON.stringify(docs, undefined, 2));
+  // }, (err) => {
+  //   console.log('Unable to fetch todos', err);
+  // })
 
-  db.close();
+  // db.collection('Todos').find().count().then((count) => {
+  //   console.log(`Todos count: ${count}`);
+  // }, (err) => {
+  //   console.log('Unable to fetch todos', err);
+  // })
+
+  db.collection('Users').find({name: "Dan"}).toArray().then((docs) => {
+    console.log('Users with name Dan');
+    console.log(JSON.stringify(docs, undefined, 2));
+  }, (err) => {
+    console.log('Unable to fetch todos', err);
+  })
+
+  //db.close();
 });
