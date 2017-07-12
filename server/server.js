@@ -1,72 +1,35 @@
-var mongoose = require('mongoose');
+// this file will only be responsible for routes!
+// LIBRARY IMPORTS:
+var express = require('express');
+var bodyParser = require('body-parser');
 
-// mongoose does callbacks by default, change to promises here
-mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/TodoApp');
+// LOCAL INMPORTS:
+// pull off the mongoose property using ES6 destructuring
+// esentially creating a local variable called mongoose equal
+// to the mongoose property on the object thats the return result
+// from require
+var {mongoose} = require('./db/mongoose.js');
 
-// // create the mongoose model
-// var Todo = mongoose.model('Todo', {
-//   text: {
-//     type: String,
-//     required: true,
-//     minlength: 1,
-//     trim: true
-//   },
-//   completed: {
-//     type: Boolean,
-//     default: false
-//   },
-//   completedAt: {
-//     type: Number,
-//     default: null
-//   }
-// });
+var {Todo} = require('./models/todo.js');
+var {User} = require('./models/user.js');
 
-// // create a new todo
-// var newTodo = new Todo({
-//   text: 'Cook dinner'
-// });
-//
-// // save it to database
-// newTodo.save().then((doc) => {
-//   console.log('Saved todo', doc);
-// }, (e) => {
-//   console.log('Unable to save todo');
-// });
+var app = express();
 
-// // create a new todo
-// var newTodo2 = new Todo({
-//   text: '    edit vacation video    '
-//   // text: 'Paint Garagedoor',
-//   // completed: false,
-//   // completedAt: 2232444
-// });
+// setup bodyParser as middleware
+app.use(bodyParser.json());
 
-// // save it to database
-// newTodo2.save().then((doc) => {
-//   console.log(JSON.stringify(doc, undefined, 2));
-// }, (e) => {
-//   console.log('Unable to save todo', e);
-// });
+app.post('/todos', (req, res) => {
+  var todo = new Todo({
+    text: req.body.text
+  });
 
-// create the mongoose model for user
-var User = mongoose.model('User', {
-  email: {
-    type: String,
-    required: true,
-    minlength: 1,
-    trim: true
-  }
+  todo.save().then((doc) => {
+    res.send(doc);
+  }, (e) => {
+    res.status(400).send(e);
+  });
 });
 
-// create a new user
-var newUser = new User({
-  email: '   jim@bob.com'
-});
-
-// save it to database
-newUser.save().then((doc) => {
-  console.log(JSON.stringify(doc, undefined, 2));
-}, (e) => {
-  console.log('Unable to save user', e);
+app.listen(3000, () => {
+  console.log('Started on port 3000');
 });
