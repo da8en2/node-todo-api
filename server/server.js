@@ -2,6 +2,7 @@
 // LIBRARY IMPORTS:
 var express = require('express');
 var bodyParser = require('body-parser');
+var {ObjectID} = require('mongodb');
 
 // LOCAL INMPORTS:
 // pull off the mongoose property using ES6 destructuring
@@ -35,6 +36,30 @@ app.get('/todos', (req,res) => {
     res.send({todos});
   }, (e) => {
     res.status(400).send(e);
+  });
+});
+
+// GET /todos/1212321
+app.get('/todos/:id', (req, res) => {
+  var id = req.params.id;
+
+  // validate id using isValid
+  if (!ObjectID.isValid(id)) {
+    // 404 - send back empty send
+    return res.status(404).send();
+  }
+
+  // findById
+  Todo.findById(id).then((todo) => {
+    if (!todo) {
+      // if no todo - send back 404 with empty body
+      return res.status(404).send();
+    }
+    // success - if todo - send it back
+    res.status(200).send({todo});
+  }).catch((e) => {
+    // 400 Error and send back empty body
+    res.status(400).send();
   });
 });
 
