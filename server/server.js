@@ -1,3 +1,5 @@
+require('./config/config.js');
+
 // this file will only be responsible for routes!
 // LIBRARY IMPORTS:
 const _ = require('lodash');
