@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 // load in validator
 const validator = require('validator');
 
+// load in jsonwebtoken
+const jwt = require('jsonwebtoken');
+
 // create mongoose schema
 var UserSchema = new mongoose.Schema({
   email: {
@@ -33,6 +36,19 @@ var UserSchema = new mongoose.Schema({
     }
   }]
 });
+
+// do not use arrow function because that wouldn't give access to this keyword!
+UserSchema.methods.generateAuthToken = function () {
+  var user = this;
+  var access = 'auth';
+  var token = jwt.sign({_id: user._id.toHexString(), access}, 'someSecretSalt').toString();
+
+  user.tokens.push({access, token});
+
+  return user.save().then(() => {
+    return token;
+  });
+};
 
 // create the mongoose model for user
 var User = mongoose.model('User', UserSchema);
