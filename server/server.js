@@ -113,6 +113,19 @@ app.patch('/todos/:id', (req, res) => {
 });
 
 
+// POST /users ... use pick to pull off email and password, avoid exposing access to tokens
+app.post('/users', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+
+  var user = new User(body);
+
+  user.save().then((userDoc) => {
+    res.send(userDoc);
+  }).catch((e) => {
+    res.status(400).send(e);
+  })
+});
+
 app.listen(port, () => {
   console.log(`Started on port ${port}`);
 });
